@@ -1,6 +1,6 @@
 process.env.DEBUG = 'actions-on-google:*';
 
-const Assistant = require('actions-on-google').DialogflowApp;
+const Assistant = require('actions-on-google').ApiAiApp;
 var express = require('express');
 var bodyParser = require('body-parser');
 var request_lib = require('request'); // for sending the http requests to Numbers API

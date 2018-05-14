@@ -1,28 +1,53 @@
+process.env.DEBUG = 'actions-on-google:*';
+
+// const Assistant = require('actions-on-google').DialogflowApp;
 const {
     dialogflow,
-    Image,
-} = require('actions-on-google')
+    Image
+} = require('actions-on-google');
 
-// Create an app instance
 
-const app = dialogflow()
+const assistant = dialogflow();
+var express = require('express');
+var bodyParser = require('body-parser');
+var request_lib = require('request'); // for sending the http requests to Numbers API
+var assert = require('assert');
+var rp = require('request-promise');
 
-// Register handlers for Dialogflow intents
+// let apiId = "";
+// let apiKey = "";
+// console.log(apiId);
+// console.log(apiKey);
+var app = express();
 
-app.intent('Default Welcome Intent', conv => {
-    conv.ask('Hi, how is it going?')
-    conv.ask(`Here's a picture of a cat`)
-    conv.ask(new Image({
-        url: 'https://developers.google.com/web/fundamentals/accessibility/semantics-builtin/imgs/160204193356-01-cat-500.jpg',
-        alt: 'A cat',
-    }))
-})
+app.set('port', (process.env.PORT || 8080));
+app.use(bodyParser.json({
+    type: 'application/json'
+}));
 
-// Intent in Dialogflow called `Goodbye`
-app.intent('Goodbye', conv => {
-    conv.close('See you later!')
-})
+app.post('/', function (req, res) {
+    assistant.intent('Default Welcome Intent', conv => {
+        conv.ask('Hi, how is it going?')
+        conv.ask(`Here's a picture of a cat`)
+      
+    })
 
-app.intent('Default Fallback Intent', conv => {
-    conv.ask(`I didn't understand. Can you tell me something else?`)
-})
+    // Intent in Dialogflow called `Goodbye`
+    assistant.intent('UserCredentials', conv => {
+        conv.close('See you later!')
+    })
+
+    assistant.intent('Default Fallback Intent', conv => {
+        conv.ask(`I didn't understand. Can you tell me something else?`)
+    })
+
+});
+
+
+app.get('/', function (req, res) {
+    res.send("Server is up and running.")
+});
+
+var server = app.listen(app.get('port'), function () {
+    console.log('App listening on port %s', server.address().port);
+});

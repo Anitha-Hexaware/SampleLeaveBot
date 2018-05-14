@@ -1,0 +1,9 @@
+# Node build artifacts
+node_modules
+npm-debug.log
+trythistoo.js
+curio.js
+working.js
+previous.js
+.env
+sample.js

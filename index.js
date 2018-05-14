@@ -34,7 +34,7 @@ app.post('/', function (req, res) {
 
     function WelcomeSpeach(assistant) {
         console.log("this is assistant" + assistant);
-        var reply = "Welcome to view Leave status.. give me you flight number will let you know currently where the flight is";
+        var reply = " Hello! I am BOT Assistant. How can I help you today?";
         assistant.ask(reply);
     }
 
@@ -42,8 +42,8 @@ app.post('/', function (req, res) {
     // -----------------------------------------------------------------
 
     function provideUsername(request, response) {
-         {
-            assistant.ask("please tell me your Flight Id Number example 933427129 ");
+        {
+            assistant.ask("Which Leave Type would you like to apply for ? ");
         }
     }
 

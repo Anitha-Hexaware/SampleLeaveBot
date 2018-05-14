@@ -1,3 +1,5 @@
+process.env.DEBUG = 'actions-on-google:*';
+
 const Assistant = require('actions-on-google').ApiAiApp;
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -20,6 +22,7 @@ app.use(bodyParser.json({
 // get by action
 
 const WelcomeIntent = "input.welcome";
+const UserCredientials = "Usercredentials";
 
 app.post('/', function (req, res) {
     const assistant = new Assistant({
@@ -35,10 +38,22 @@ app.post('/', function (req, res) {
         assistant.ask(reply);
     }
 
+
+    // -----------------------------------------------------------------
+
+    function provideUsername(request, response) {
+         {
+            assistant.ask("please tell me your Flight Id Number example 933427129 ");
+        }
+    }
+
+    // ----------------------------------------------------------------
+
     let actionMap = new Map();
-    let actionSee = actionMap.get(WelcomeIntent);
+    let actionSee = actionMap.get(UserCredientials);
     console.log("this is action" + actionSee);
 
+    actionMap.set(UserCredientials, provideUsername);
     actionMap.set(WelcomeIntent, WelcomeSpeach);
     // actionMap.set(quit_Intent, ThankyouSpeach);
     assistant.handleRequest(actionMap);

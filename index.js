@@ -1,70 +1,28 @@
-process.env.DEBUG = 'actions-on-google:*';
+const {
+    dialogflow,
+    Image,
+} = require('actions-on-google')
 
-const Assistant = require('actions-on-google').ApiAiApp;
-var express = require('express');
-var bodyParser = require('body-parser');
-var request_lib = require('request'); // for sending the http requests to Numbers API
-var assert = require('assert');
-var rp = require('request-promise');
+// Create an app instance
 
-// let apiId = "";
-// let apiKey = "";
-// console.log(apiId);
-// console.log(apiKey);
-var app = express();
+const app = dialogflow()
 
-app.set('port', (process.env.PORT || 8080));
-app.use(bodyParser.json({
-    type: 'application/json'
-}));
+// Register handlers for Dialogflow intents
 
+app.intent('Default Welcome Intent', conv => {
+    conv.ask('Hi, how is it going?')
+    conv.ask(`Here's a picture of a cat`)
+    conv.ask(new Image({
+        url: 'https://developers.google.com/web/fundamentals/accessibility/semantics-builtin/imgs/160204193356-01-cat-500.jpg',
+        alt: 'A cat',
+    }))
+})
 
-// get by action
+// Intent in Dialogflow called `Goodbye`
+app.intent('Goodbye', conv => {
+    conv.close('See you later!')
+})
 
-const WelcomeIntent = "input.welcome";
-const UserCredientials = "Usercredentials";
-
-app.post('/', function (req, res) {
-    const assistant = new Assistant({
-        request: req,
-        response: res
-    });
-    var intent = assistant.getIntent();
-    console.log("hi this is intent" + intent);
-
-    function WelcomeSpeach(assistant) {
-        console.log("this is assistant" + assistant);
-        var reply = " Hello! I am BOT Assistant. How can I help you today?";
-        assistant.ask(reply);
-    }
-
-
-    // -----------------------------------------------------------------
-
-    function provideUsername(request, response) {
-        {
-            assistant.ask("Which Leave Type would you like to apply for ? ");
-        }
-    }
-
-    // ----------------------------------------------------------------
-
-    let actionMap = new Map();
-    let actionSee = actionMap.get(UserCredientials);
-    console.log("this is action" + actionSee);
-
-    actionMap.set(UserCredientials, provideUsername);
-    actionMap.set(WelcomeIntent, WelcomeSpeach);
-    // actionMap.set(quit_Intent, ThankyouSpeach);
-    assistant.handleRequest(actionMap);
-
-});
-
-
-app.get('/', function (req, res) {
-    res.send("Server is up and running.")
-});
-
-var server = app.listen(app.get('port'), function () {
-    console.log('App listening on port %s', server.address().port);
-});
+app.intent('Default Fallback Intent', conv => {
+    conv.ask(`I didn't understand. Can you tell me something else?`)
+})

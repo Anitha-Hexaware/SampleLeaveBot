@@ -1,47 +1,48 @@
-process.env.DEBUG = 'actions-on-google:*';
-
-// const Assistant = require('actions-on-google').DialogflowApp;
 const {
-    dialogflow,
-    Image
+    DialogflowApp
 } = require('actions-on-google');
-
-
-const assistant = dialogflow();
+const request = require('request');
 var express = require('express');
 var bodyParser = require('body-parser');
-var request_lib = require('request'); // for sending the http requests to Numbers API
-var assert = require('assert');
-var rp = require('request-promise');
 
-// let apiId = "";
-// let apiKey = "";
-// console.log(apiId);
-// console.log(apiKey);
 var app = express();
+
+const UserIntent = " UserCredentials";
+const WelcomeIntent = "input.welcome";
 
 app.set('port', (process.env.PORT || 8080));
 app.use(bodyParser.json({
     type: 'application/json'
 }));
 
+
 app.post('/', function (req, res) {
-    assistant.intent('Default Welcome Intent', conv => {
-        conv.ask('Hi, how is it going?')
-        conv.ask(`Here's a picture of a cat`)
-      
-    })
+    const assistant = new DialogflowApp({
+        request: req,
+        response: res
+    });
 
-    // Intent in Dialogflow called `Goodbye`
-    assistant.intent('UserCredentials', conv => {
-        conv.close('See you later!')
-    })
+    var intent = assistant.getIntent();
+    console.log("hi this is intent" + intent);
 
-    assistant.intent('Default Fallback Intent', conv => {
-        conv.ask(`I didn't understand. Can you tell me something else?`)
-    })
+    function WelcomeSpeach(assistant) {
+        console.log("this is assistant" + assistant);
+        var reply = "Hello! I am BOT Assistant. How can I help you today?";
+        assistant.ask(reply);
+    }
 
-});
+    function Userfunction(assistant) {
+        console.log("this is assistant" + assistant);
+        var reply = "Sure, When would you like to apply leave for and for how many days?";
+        assistant.ask(reply);
+    }
+
+    const actionMap = new Map();
+    actionMap.set(UserIntent, Userfunction);
+    actionMap.set(WelcomeIntent, WelcomeSpeach);
+
+    assistant.handleRequest(actionMap);
+})
 
 
 app.get('/', function (req, res) {

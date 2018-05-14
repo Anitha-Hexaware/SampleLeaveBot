@@ -21,8 +21,6 @@ app.use(bodyParser.json({
 
 const WelcomeIntent = "input.welcome";
 
-
-
 app.post('/', function (req, res) {
     const assistant = new Assistant({
         request: req,
@@ -33,19 +31,10 @@ app.post('/', function (req, res) {
 
     function WelcomeSpeach(assistant) {
         console.log("this is assistant" + assistant);
-        var reply = "Welcome to FlightStat.. give me you flight number will let you know currently where the flight is";
+        var reply = "Welcome to view Leave status.. give me you flight number will let you know currently where the flight is";
         assistant.ask(reply);
     }
 
-
-
-    app.get('/', function (req, res) {
-        res.send("Server is up and running.")
-    });
-
-    var server = app.listen(app.get('port'), function () {
-        console.log('App listening on port %s', server.address().port);
-    });
     let actionMap = new Map();
     let actionSee = actionMap.get(WelcomeIntent);
     console.log("this is action" + actionSee);
@@ -53,4 +42,14 @@ app.post('/', function (req, res) {
     actionMap.set(WelcomeIntent, WelcomeSpeach);
     // actionMap.set(quit_Intent, ThankyouSpeach);
     assistant.handleRequest(actionMap);
+
+});
+
+
+app.get('/', function (req, res) {
+    res.send("Server is up and running.")
+});
+
+var server = app.listen(app.get('port'), function () {
+    console.log('App listening on port %s', server.address().port);
 });
